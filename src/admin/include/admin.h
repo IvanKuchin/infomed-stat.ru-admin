@@ -18,7 +18,6 @@
 #include "cuser.h"
 #include "cexception.h"
 #include "cstatistics.h"
-#include "utilities_timecard.h"
 #include "locale.h"
 
 // #define	ADMIN_LOG_FILE_NAME							string(LOGDIR) + DOMAIN_NAME + ".admin"
