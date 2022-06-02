@@ -66,13 +66,13 @@ COPY . ${GIT_FOLDER}
 WORKDIR ${GIT_FOLDER}
 RUN git clone --depth 1 https://github.com/IvanKuchin/backend_pi.git ./src/pi
 
-######################################################
-# pull PD src                                        #
-# assume the repo name is xxxxxx-admin               #
-# below command cuts out "dash" and everything after #
-######################################################
-RUN git clone --depth 1 https://github.com/IvanKuchin/${BUILD_REPO%-*}.git /tmp/${BUILD_REPO}/
-RUN cp -R /tmp/${BUILD_REPO}/src/pd ./src
+######################
+# libxl installation #
+######################
+RUN if test -f "./libxl-3.8.4.0/lib64/libxl.so"; then \
+       cp ./libxl-3.8.4.0/lib64/libxl.so /usr/local/lib/ \
+       && ldconfig; \
+    fi
 
 ##################
 # save commit id #
