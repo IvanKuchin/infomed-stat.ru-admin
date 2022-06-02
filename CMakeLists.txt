@@ -119,7 +119,7 @@ add_subdirectory(supplemental/ci-scripts/)
 add_subdirectory(supplemental/git/)
 add_subdirectory(supplemental/config/)
 add_subdirectory(templates/)
-add_subdirectory(supplemental/ssmtp/)
+#add_subdirectory(supplemental/ssmtp/)
 
 #add_subdirectory(supplemental/init_d/)
 #add_subdirectory(po/)
