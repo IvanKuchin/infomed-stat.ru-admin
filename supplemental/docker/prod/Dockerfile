@@ -60,6 +60,7 @@ ARG IMAGE_SUBDOMAIN
 ARG ROOTDIR
 ARG IMAGEROOTDIR
 ARG LOCAL_INSTALL_DIR
+ARG BUILD_RELEASE_NUMBER
 
 ########################
 # install dependencies #
@@ -91,12 +92,6 @@ RUN apt update \
         wget \
     && apt-get clean
 
-#############################
-# libwkhtmltox installation #
-#############################
-RUN wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.trusty_amd64.deb
-RUN apt install --no-install-recommends --no-install-suggests -y ./wkhtmltox_0.12.5-1.trusty_amd64.deb
-
 ###############
 # pull PI src #
 ###############
@@ -118,6 +113,14 @@ RUN cp -R /tmp/${BUILD_REPO}/src/pd ./src
 RUN if test -f "./libxl-3.8.4.0/lib64/libxl.so"; then \
        cp ./libxl-3.8.4.0/lib64/libxl.so /usr/local/lib/ \
        && ldconfig; \
+    fi
+
+#############################
+# libwkhtmltox installation #
+#############################
+RUN if test -d "./wkhtmltox"; then \
+       wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.trusty_amd64.deb \
+       && apt install --no-install-recommends --no-install-suggests -y ./wkhtmltox*.deb; \
     fi
 
 ##################
@@ -161,6 +164,16 @@ COPY --from=build ${GIT_FOLDER}/build/${BUILD_REPO}-infra.deb ./
 COPY --from=build ${GIT_FOLDER}/build/${BUILD_REPO}-admin.deb ./
 COPY --from=build ${GIT_FOLDER}/supplemental/apache2/ /etc/apache2/
 
+###############
+# copy libxl  #
+###############
+COPY --from=build /usr/local/lib/libxl* /usr/local/lib/
+
+###################
+# copy wkhtmltox  #
+###################
+COPY --from=build ${GIT_FOLDER}/wkhtmltox*.deb ./
+
 ####################
 # install binaries #
 ####################
@@ -169,8 +182,6 @@ RUN apt update \
                software-properties-common \
                ssmtp \
                apache2 \
-    # && add-apt-repository -y ppa:jonathonf/ffmpeg-4 \
-    # && apt update \
     && apt install  --no-install-recommends --no-install-suggests -y ./*.deb \
     && rm -rf /var/lib/apt/lists/*
 
