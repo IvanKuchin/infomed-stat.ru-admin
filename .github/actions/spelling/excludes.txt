@@ -1,0 +1,1 @@
+^\Qsrc/admin/include/admin.h\E$
